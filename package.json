@@ -4,8 +4,8 @@
   "private": true,
   "workspaces": {
     "packages": [
-      "packages/hardhat",
-      "packages/web"
+      "hardhat",
+      "web"
     ]
   },
   "scripts": {
