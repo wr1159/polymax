@@ -1,0 +1,29 @@
+{
+  "name": "polymax",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/hardhat",
+      "packages/web"
+    ]
+  },
+  "scripts": {
+    "account": "yarn workspace @polymax/hardhat account",
+    "chain": "yarn workspace @polymax/hardhat chain",
+    "fork": "yarn workspace @polymax/hardhat fork",
+    "deploy": "yarn workspace @polymax/hardhat deploy",
+    "verify": "yarn workspace @polymax/hardhat verify",
+    "compile": "yarn workspace @polymax/hardhat compile",
+    "generate": "yarn workspace @polymax/hardhat generate",
+    "hardhat:lint": "yarn workspace @polymax/hardhat lint",
+    "hardhat:lint-staged": "yarn workspace @polymax/hardhat lint-staged",
+    "hardhat:test": "yarn workspace @polymax/hardhat test",
+    "test": "yarn hardhat:test",
+    "start": "yarn workspace @polymax/web dev",
+    "next:lint": "yarn workspace @polymax/web lint",
+    "next:format": "yarn workspace @polymax/web format",
+    "next:format-fix": "yarn workspace @polymax/web format-fix"
+  },
+  "packageManager": "pnpm@7.1.8"
+}
