@@ -1,5 +1,5 @@
 {
-  "name": "polymax",
+  "name": "@polymax/web",
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
