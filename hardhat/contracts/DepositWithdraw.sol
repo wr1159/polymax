@@ -12,7 +12,9 @@ contract DepositWithdraw {
         owner = payable(msg.sender);
     }
 
+    event Deposit(address user, uint amount, uint when);
     event Withdrawal(address user, uint amount, uint when);
+    event Transfer(address user, address _to, uint amount, uint when);
     mapping(address => uint) public balances;
 
     receive() external payable {}
@@ -25,6 +27,7 @@ contract DepositWithdraw {
     }
 
     function deposit() public payable {
+        emit Deposit(msg.sender, balances[msg.sender], block.timestamp);
         balances[msg.sender] += msg.value;
     }
 
@@ -50,6 +53,7 @@ contract DepositWithdraw {
         );
         (bool success, ) = _to.call{value: _amount}("");
         require(success, "Failed to send Ether");
+        event Transfer(address user, address _to, uint amount, uint when);
         balances[msg.sender] -= _amount;
     }
 }
