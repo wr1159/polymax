@@ -27,9 +27,9 @@ export function MainNav() {
     <div className="mr-4 hidden md:flex">
       <Link href="/" className="mr-6 flex items-center space-x-2">
         <LightDarkImage
-          LightImage="/logo-dark.png"
-          DarkImage="/logo-light.png"
-          alt="TurboETH"
+          LightImage="/logo.png"
+          DarkImage="/logo-dark.png"
+          alt="Polymax"
           className="rounded-full"
           height={32}
           width={32}
@@ -50,43 +50,11 @@ function MainNavMenu() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Integrations</NavigationMenuTrigger>
-          <NavigationMenuContent className="max-h-[768px] overflow-y-scroll">
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[768px] lg:grid-cols-3">
-              {integrationCategories.map((category) => {
-                const categoryIntegrations = Object.values(
-                  turboIntegrations
-                ).filter((integration) => integration.category === category)
-                return (
-                  categoryIntegrations.length > 0 && (
-                    <>
-                      <h4
-                        key={category}
-                        className="text-lg font-medium leading-none md:col-span-2 lg:col-span-3"
-                      >
-                        {category.charAt(0).toUpperCase() + category.slice(1)}
-                      </h4>
-                      <Separator className="md:col-span-2 lg:col-span-3" />
-                      {categoryIntegrations.map(
-                        ({ name, href, description, imgDark, imgLight }) => (
-                          <NavMenuListItem
-                            key={name}
-                            name={name}
-                            href={href}
-                            description={description}
-                            lightImage={imgDark}
-                            darkImage={imgLight}
-                          />
-                        )
-                      )}
-                    </>
-                  )
-                )
-              })}
-            </ul>
-          </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
+          <LinkComponent href="#features">
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <span>Features</span>
+            </NavigationMenuLink>
+          </LinkComponent>
           <LinkComponent href="https://docs.turboeth.xyz/overview">
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               <span>Documentation</span>
