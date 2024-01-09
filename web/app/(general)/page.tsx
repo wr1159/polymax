@@ -37,15 +37,15 @@ export default function HomePage() {
               alt="Polymax Logo"
               width={200}
               height={200}
-              className="m-auto rounded-2xl bounce-with-delay pb-0"
+              className="bounce-with-delay m-auto rounded-2xl pb-0"
             />
-            <div className="h-full w-full rounded-2xl m-auto ripple-effect">
+            <div className="ripple-effect m-auto h-full w-full rounded-2xl">
               <Image
                 src="/logo.png"
                 alt="Polymax Logo"
                 width={100}
                 height={100}
-                className="h-full w-full rounded-2xl bounce-with-delay"
+                className="bounce-with-delay h-full w-full rounded-2xl"
               />
               <div className="ripple-effect invisible"></div>
             </div>
