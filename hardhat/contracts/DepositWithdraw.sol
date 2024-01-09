@@ -22,13 +22,13 @@ contract DepositWithdraw {
     // Fallback function is called when msg.data is not empty
     fallback() external payable {}
 
-    function getBalance() public view returns (uint) {
-        return address(this).balance;
+    function getBalance(address toCheck) public view returns (uint) {
+        return balances[toCheck];
     }
 
     function deposit() public payable {
-        emit Deposit(msg.sender, balances[msg.sender], block.timestamp);
         balances[msg.sender] += msg.value;
+        emit Deposit(msg.sender, msg.value, block.timestamp);
     }
 
     function withdraw(uint _amount) public {
@@ -41,8 +41,8 @@ contract DepositWithdraw {
 
         (bool success, ) = msg.sender.call{value: _amount}("");
         require(success, "Failed to send Ether");
-        emit Withdrawal(msg.sender, balances[msg.sender], block.timestamp);
         balances[msg.sender] -= _amount;
+        emit Withdrawal(msg.sender, _amount, block.timestamp);
     }
 
     function transfer(address payable _to, uint _amount) public {
@@ -53,7 +53,7 @@ contract DepositWithdraw {
         );
         (bool success, ) = _to.call{value: _amount}("");
         require(success, "Failed to send Ether");
-        event Transfer(address user, address _to, uint amount, uint when);
         balances[msg.sender] -= _amount;
+        emit Transfer(msg.sender, _to, _amount, block.timestamp);
     }
 }
