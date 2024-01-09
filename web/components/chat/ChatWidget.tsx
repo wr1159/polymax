@@ -15,7 +15,7 @@ import ChatPanel from "./ChatPanel"
 export function ChatWidget() {
   const [isOpen, setOpen] = useState<boolean>(false)
   return (
-    <Popover>
+    <Popover open={isOpen}>
       <PopoverTrigger asChild>
         {isOpen ? (
           <Button size="icon" onClick={() => setOpen(false)}>
