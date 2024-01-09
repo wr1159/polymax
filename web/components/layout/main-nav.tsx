@@ -50,12 +50,12 @@ function MainNavMenu() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <LinkComponent href="#features">
+          <LinkComponent href="/dashboard">
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <span>Features</span>
+              <span>Dashboard</span>
             </NavigationMenuLink>
           </LinkComponent>
-          <LinkComponent href="https://docs.turboeth.xyz/overview">
+          <LinkComponent href="https://github.com/wr1159/polymax">
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               <span>Documentation</span>
             </NavigationMenuLink>

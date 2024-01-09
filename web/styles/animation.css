@@ -27,7 +27,7 @@
   height: 150px;
   width: 400px;
   margin: auto;
-  border: 5px solid black;
+  border: 5px solid;
   border-radius: 50%;
   animation: ripple 2s infinite;
   animation-delay: 4s; /* Adjust the delay duration as needed */

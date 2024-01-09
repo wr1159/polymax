@@ -17,6 +17,8 @@ import {
 } from "@/components/layout/page-header"
 import { CopyButton } from "@/components/shared/copy-button"
 import { ExampleDemos } from "@/components/shared/example-demos"
+import { IsDarkTheme } from "@/components/shared/is-dark-theme"
+import { IsLightTheme } from "@/components/shared/is-light-theme"
 
 export default function HomePage() {
   return (
@@ -32,23 +34,44 @@ export default function HomePage() {
             </PageHeaderDescription>
           </div>
           <div>
-            <Image
-              src="/logo.png"
-              alt="Polymax Logo"
-              width={200}
-              height={200}
-              className="bounce-with-delay m-auto rounded-2xl pb-0"
-            />
-            <div className="ripple-effect m-auto h-full w-full rounded-2xl">
+            <IsLightTheme>
               <Image
                 src="/logo.png"
                 alt="Polymax Logo"
-                width={100}
-                height={100}
-                className="bounce-with-delay h-full w-full rounded-2xl"
+                width={200}
+                height={200}
+                className="bounce-with-delay m-auto rounded-2xl pb-0"
               />
-              <div className="ripple-effect invisible"></div>
-            </div>
+              <div className="ripple-effect m-auto h-full w-full rounded-2xl border-black">
+                <Image
+                  src="/logo.png"
+                  alt="Polymax Logo"
+                  width={100}
+                  height={100}
+                  className="h-full w-full rounded-2xl"
+                />
+                <div className="ripple-effect invisible"></div>
+              </div>
+            </IsLightTheme>
+            <IsDarkTheme>
+              <Image
+                src="/logo-dark.png"
+                alt="Polymax Logo"
+                width={200}
+                height={200}
+                className="bounce-with-delay m-auto rounded-2xl pb-0"
+              />
+              <div className="ripple-effect m-auto h-full w-full rounded-2xl border-white">
+                <Image
+                  src="/logo-dark.png"
+                  alt="Polymax Logo"
+                  width={100}
+                  height={100}
+                  className="h-full w-full rounded-2xl"
+                />
+                <div className="ripple-effect invisible"></div>
+              </div>
+            </IsDarkTheme>
           </div>
         </div>
       </PageHeader>
