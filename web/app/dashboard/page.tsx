@@ -1,5 +1,6 @@
 "use client"
 
+import { parse } from "path"
 import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 
@@ -14,10 +15,20 @@ import { BeefyData } from "./BeefyInterface"
 import { HarvestData } from "./HarvestInterface"
 import { YearnData } from "./YearnInterface"
 
+interface parsedData {
+  [key: string]: {
+    exchange: string
+    token: string
+    platform: string
+    apy: string
+  }
+}
+
 export default function PageDashboard() {
   const [beefyData, setBeefyData] = useState<BeefyData | null>(null)
   const [yearnData, setYearnData] = useState<YearnData | null>(null)
   const [harvestData, setHarvestData] = useState<HarvestData | null>(null)
+  const [parsedData, setParsedData] = useState<parsedData | null>(null)
 
   useEffect(() => {
     // Make the API call when the component mounts
@@ -32,9 +43,26 @@ export default function PageDashboard() {
 
         const result: BeefyData = await response.json()
         setBeefyData(result)
+        parseBeefyData(result)
       } catch (error) {
         console.error("Error fetching data:", error)
       }
+    }
+
+    const parseBeefyData = (data: BeefyData) => {
+      const parsedData: parsedData = {}
+      if (!data) return
+      Object.keys(data).forEach((key) => {
+        const firstDashIndex = key.indexOf("-")
+        parsedData[key] = {
+          exchange: key.split("-")[0],
+          token: key.slice(firstDashIndex + 1),
+          platform: "Beefy",
+          apy: String(data[key].vaultApr),
+        }
+      })
+      setParsedData(parsedData)
+      return
     }
 
     const fetchYearnData = async () => {
@@ -50,9 +78,27 @@ export default function PageDashboard() {
 
         const result: YearnData = await response.json()
         setYearnData(result)
+        parseYearnData(result)
       } catch (error) {
         console.error("Error fetching data:", error)
       }
+    }
+
+    const parseYearnData = (data: YearnData) => {
+      const parsedData: parsedData = {}
+      if (!data) return
+      data.forEach((token) => {
+        parsedData[token.name] = {
+          exchange: "",
+          token: token.name,
+          platform: "Yearn",
+          apy: token.apr.netAPR
+            ? String(token.apr.netAPR)
+            : String(token.apr.forwardAPR.netAPR),
+        }
+      })
+      setParsedData((prev) => ({ ...prev, ...parsedData }))
+      return
     }
 
     const fetchHarvestData = async () => {
@@ -67,15 +113,37 @@ export default function PageDashboard() {
         }
 
         const result: HarvestData = await response.json()
+        delete result.updatedAt
         setHarvestData(result)
+        parseHarvestData(result)
       } catch (error) {
         console.error("Error fetching data:", error)
       }
     }
 
+    const parseHarvestData = (data: HarvestData) => {
+      const parsedData: parsedData = {}
+      if (!data) return
+      Object.keys(data).forEach((key) => {
+        const tokens = data[key]
+        Object.keys(tokens).forEach((token) => {
+          const firstDelimiterIndex = token.indexOf("_")
+          parsedData[token] = {
+            exchange: token.split("_")[0],
+            token: token.slice(firstDelimiterIndex + 1),
+            platform: "Harvest",
+            apy: tokens[token].estimatedApy,
+          }
+        })
+      })
+      setParsedData((prev) => ({ ...prev, ...parsedData }))
+      return
+    }
+
     fetchBeefyData()
     fetchYearnData()
     fetchHarvestData()
+
   }, [])
 
   return (
@@ -118,7 +186,18 @@ export default function PageDashboard() {
               </tr>
             </thead>
             <tbody>
-              {beefyData &&
+              {parsedData &&
+                Object.keys(parsedData).map((key) => {
+                  return (
+                    <tr key={key}>
+                      <td>{parsedData[key].exchange}</td>
+                      <td>{parsedData[key].token}</td>
+                      <td>{parsedData[key].platform}</td>
+                      <td>{parsedData[key].apy}</td>
+                    </tr>
+                  )
+                })}
+              {/* {beefyData &&
                 Object.keys(beefyData).map((token) => {
                   const firstDashIndex = token.indexOf("-")
                   return (
@@ -134,6 +213,7 @@ export default function PageDashboard() {
                 yearnData.map((token) => {
                   return (
                     <tr key={token.address}>
+                      <td></td>
                       <td>{token.name}</td>
                       <td>Yearn</td>
                       <td>
@@ -158,7 +238,7 @@ export default function PageDashboard() {
                       </tr>
                     )
                   })
-                })}
+                })} */}
             </tbody>
           </table>
         </div>
