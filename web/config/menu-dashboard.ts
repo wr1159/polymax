@@ -10,4 +10,8 @@ export const menuDashboard = [
     label: "Account",
     href: "/dashboard/account",
   },  
+  {
+    label: "AI Vault",
+    href: "/dashboard/ai-vault",
+  },
 ]

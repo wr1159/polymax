@@ -15,104 +15,134 @@ import {
 } from "wagmi/actions"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// erc20
+// DepositWithdraw
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const erc20ABI = [
+export const depositWithdrawABI = [
+  { stateMutability: "payable", type: "constructor", inputs: [] },
   {
     type: "event",
+    anonymous: false,
     inputs: [
-      { name: "owner", type: "address", indexed: true },
-      { name: "spender", type: "address", indexed: true },
-      { name: "value", type: "uint256", indexed: false },
+      {
+        name: "user",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+      {
+        name: "amount",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+      {
+        name: "when",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
     ],
-    name: "Approval",
+    name: "Deposit",
   },
   {
     type: "event",
+    anonymous: false,
     inputs: [
-      { name: "from", type: "address", indexed: true },
-      { name: "to", type: "address", indexed: true },
-      { name: "value", type: "uint256", indexed: false },
+      {
+        name: "user",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+      { name: "_to", internalType: "address", type: "address", indexed: false },
+      {
+        name: "amount",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+      {
+        name: "when",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
     ],
     name: "Transfer",
   },
   {
+    type: "event",
+    anonymous: false,
+    inputs: [
+      {
+        name: "user",
+        internalType: "address",
+        type: "address",
+        indexed: false,
+      },
+      {
+        name: "amount",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+      {
+        name: "when",
+        internalType: "uint256",
+        type: "uint256",
+        indexed: false,
+      },
+    ],
+    name: "Withdrawal",
+  },
+  { stateMutability: "payable", type: "fallback" },
+  {
     stateMutability: "view",
     type: "function",
-    inputs: [
-      { name: "owner", type: "address" },
-      { name: "spender", type: "address" },
-    ],
-    name: "allowance",
-    outputs: [{ name: "", type: "uint256" }],
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "balances",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "payable",
+    type: "function",
+    inputs: [],
+    name: "deposit",
+    outputs: [],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "toCheck", internalType: "address", type: "address" }],
+    name: "getBalance",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+  },
+  {
+    stateMutability: "view",
+    type: "function",
+    inputs: [],
+    name: "owner",
+    outputs: [{ name: "", internalType: "address payable", type: "address" }],
   },
   {
     stateMutability: "nonpayable",
     type: "function",
     inputs: [
-      { name: "spender", type: "address" },
-      { name: "amount", type: "uint256" },
-    ],
-    name: "approve",
-    outputs: [{ name: "", type: "bool" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [{ name: "account", type: "address" }],
-    name: "balanceOf",
-    outputs: [{ name: "", type: "uint256" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "decimals",
-    outputs: [{ name: "", type: "uint8" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "name",
-    outputs: [{ name: "", type: "string" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "symbol",
-    outputs: [{ name: "", type: "string" }],
-  },
-  {
-    stateMutability: "view",
-    type: "function",
-    inputs: [],
-    name: "totalSupply",
-    outputs: [{ name: "", type: "uint256" }],
-  },
-  {
-    stateMutability: "nonpayable",
-    type: "function",
-    inputs: [
-      { name: "recipient", type: "address" },
-      { name: "amount", type: "uint256" },
+      { name: "_to", internalType: "address payable", type: "address" },
+      { name: "_amount", internalType: "uint256", type: "uint256" },
     ],
     name: "transfer",
-    outputs: [{ name: "", type: "bool" }],
+    outputs: [],
   },
   {
     stateMutability: "nonpayable",
     type: "function",
-    inputs: [
-      { name: "sender", type: "address" },
-      { name: "recipient", type: "address" },
-      { name: "amount", type: "uint256" },
-    ],
-    name: "transferFrom",
-    outputs: [{ name: "", type: "bool" }],
+    inputs: [{ name: "_amount", internalType: "uint256", type: "uint256" }],
+    name: "withdraw",
+    outputs: [],
   },
+  { stateMutability: "payable", type: "receive" },
 ] as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,344 +150,345 @@ export const erc20ABI = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link depositWithdrawABI}__.
  */
-export function useErc20Read<
+export function useDepositWithdrawRead<
   TFunctionName extends string,
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
+  TSelectData = ReadContractResult<typeof depositWithdrawABI, TFunctionName>
 >(
   config: Omit<
-    UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof depositWithdrawABI,
+      TFunctionName,
+      TSelectData
+    >,
     "abi"
   > = {} as any
 ) {
-  return useContractRead({ abi: erc20ABI, ...config } as UseContractReadConfig<
-    typeof erc20ABI,
+  return useContractRead({
+    abi: depositWithdrawABI,
+    ...config,
+  } as UseContractReadConfig<
+    typeof depositWithdrawABI,
     TFunctionName,
     TSelectData
   >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"allowance"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link depositWithdrawABI}__ and `functionName` set to `"balances"`.
  */
-export function useErc20Allowance<
-  TFunctionName extends "allowance",
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
+export function useDepositWithdrawBalances<
+  TFunctionName extends "balances",
+  TSelectData = ReadContractResult<typeof depositWithdrawABI, TFunctionName>
 >(
   config: Omit<
-    UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof depositWithdrawABI,
+      TFunctionName,
+      TSelectData
+    >,
     "abi" | "functionName"
   > = {} as any
 ) {
   return useContractRead({
-    abi: erc20ABI,
-    functionName: "allowance",
+    abi: depositWithdrawABI,
+    functionName: "balances",
     ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof depositWithdrawABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"balanceOf"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link depositWithdrawABI}__ and `functionName` set to `"getBalance"`.
  */
-export function useErc20BalanceOf<
-  TFunctionName extends "balanceOf",
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
+export function useDepositWithdrawGetBalance<
+  TFunctionName extends "getBalance",
+  TSelectData = ReadContractResult<typeof depositWithdrawABI, TFunctionName>
 >(
   config: Omit<
-    UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof depositWithdrawABI,
+      TFunctionName,
+      TSelectData
+    >,
     "abi" | "functionName"
   > = {} as any
 ) {
   return useContractRead({
-    abi: erc20ABI,
-    functionName: "balanceOf",
+    abi: depositWithdrawABI,
+    functionName: "getBalance",
     ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof depositWithdrawABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"decimals"`.
+ * Wraps __{@link useContractRead}__ with `abi` set to __{@link depositWithdrawABI}__ and `functionName` set to `"owner"`.
  */
-export function useErc20Decimals<
-  TFunctionName extends "decimals",
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
+export function useDepositWithdrawOwner<
+  TFunctionName extends "owner",
+  TSelectData = ReadContractResult<typeof depositWithdrawABI, TFunctionName>
 >(
   config: Omit<
-    UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
+    UseContractReadConfig<
+      typeof depositWithdrawABI,
+      TFunctionName,
+      TSelectData
+    >,
     "abi" | "functionName"
   > = {} as any
 ) {
   return useContractRead({
-    abi: erc20ABI,
-    functionName: "decimals",
+    abi: depositWithdrawABI,
+    functionName: "owner",
     ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
+  } as UseContractReadConfig<
+    typeof depositWithdrawABI,
+    TFunctionName,
+    TSelectData
+  >)
 }
 
 /**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"name"`.
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link depositWithdrawABI}__.
  */
-export function useErc20Name<
-  TFunctionName extends "name",
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    "abi" | "functionName"
-  > = {} as any
-) {
-  return useContractRead({
-    abi: erc20ABI,
-    functionName: "name",
-    ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"symbol"`.
- */
-export function useErc20Symbol<
-  TFunctionName extends "symbol",
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    "abi" | "functionName"
-  > = {} as any
-) {
-  return useContractRead({
-    abi: erc20ABI,
-    functionName: "symbol",
-    ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractRead}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"totalSupply"`.
- */
-export function useErc20TotalSupply<
-  TFunctionName extends "totalSupply",
-  TSelectData = ReadContractResult<typeof erc20ABI, TFunctionName>
->(
-  config: Omit<
-    UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>,
-    "abi" | "functionName"
-  > = {} as any
-) {
-  return useContractRead({
-    abi: erc20ABI,
-    functionName: "totalSupply",
-    ...config,
-  } as UseContractReadConfig<typeof erc20ABI, TFunctionName, TSelectData>)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link erc20ABI}__.
- */
-export function useErc20Write<
+export function useDepositWithdrawWrite<
   TFunctionName extends string,
   TMode extends WriteContractMode = undefined
 >(
   config: TMode extends "prepared"
     ? UseContractWriteConfig<
-        PrepareWriteContractResult<typeof erc20ABI, string>["request"]["abi"],
+        PrepareWriteContractResult<
+          typeof depositWithdrawABI,
+          string
+        >["request"]["abi"],
         TFunctionName,
         TMode
       >
-    : UseContractWriteConfig<typeof erc20ABI, TFunctionName, TMode> & {
-        abi?: never
-      } = {} as any
-) {
-  return useContractWrite<typeof erc20ABI, TFunctionName, TMode>({
-    abi: erc20ABI,
-    ...config,
-  } as any)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"approve"`.
- */
-export function useErc20Approve<TMode extends WriteContractMode = undefined>(
-  config: TMode extends "prepared"
-    ? UseContractWriteConfig<
-        PrepareWriteContractResult<
-          typeof erc20ABI,
-          "approve"
-        >["request"]["abi"],
-        "approve",
+    : UseContractWriteConfig<
+        typeof depositWithdrawABI,
+        TFunctionName,
         TMode
-      > & { functionName?: "approve" }
-    : UseContractWriteConfig<typeof erc20ABI, "approve", TMode> & {
+      > & {
         abi?: never
-        functionName?: "approve"
       } = {} as any
 ) {
-  return useContractWrite<typeof erc20ABI, "approve", TMode>({
-    abi: erc20ABI,
-    functionName: "approve",
+  return useContractWrite<typeof depositWithdrawABI, TFunctionName, TMode>({
+    abi: depositWithdrawABI,
     ...config,
   } as any)
 }
 
 /**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"transfer"`.
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link depositWithdrawABI}__ and `functionName` set to `"deposit"`.
  */
-export function useErc20Transfer<TMode extends WriteContractMode = undefined>(
-  config: TMode extends "prepared"
-    ? UseContractWriteConfig<
-        PrepareWriteContractResult<
-          typeof erc20ABI,
-          "transfer"
-        >["request"]["abi"],
-        "transfer",
-        TMode
-      > & { functionName?: "transfer" }
-    : UseContractWriteConfig<typeof erc20ABI, "transfer", TMode> & {
-        abi?: never
-        functionName?: "transfer"
-      } = {} as any
-) {
-  return useContractWrite<typeof erc20ABI, "transfer", TMode>({
-    abi: erc20ABI,
-    functionName: "transfer",
-    ...config,
-  } as any)
-}
-
-/**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"transferFrom"`.
- */
-export function useErc20TransferFrom<
+export function useDepositWithdrawDeposit<
   TMode extends WriteContractMode = undefined
 >(
   config: TMode extends "prepared"
     ? UseContractWriteConfig<
         PrepareWriteContractResult<
-          typeof erc20ABI,
-          "transferFrom"
+          typeof depositWithdrawABI,
+          "deposit"
         >["request"]["abi"],
-        "transferFrom",
+        "deposit",
         TMode
-      > & { functionName?: "transferFrom" }
-    : UseContractWriteConfig<typeof erc20ABI, "transferFrom", TMode> & {
+      > & { functionName?: "deposit" }
+    : UseContractWriteConfig<typeof depositWithdrawABI, "deposit", TMode> & {
         abi?: never
-        functionName?: "transferFrom"
+        functionName?: "deposit"
       } = {} as any
 ) {
-  return useContractWrite<typeof erc20ABI, "transferFrom", TMode>({
-    abi: erc20ABI,
-    functionName: "transferFrom",
+  return useContractWrite<typeof depositWithdrawABI, "deposit", TMode>({
+    abi: depositWithdrawABI,
+    functionName: "deposit",
     ...config,
   } as any)
 }
 
 /**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link erc20ABI}__.
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link depositWithdrawABI}__ and `functionName` set to `"transfer"`.
  */
-export function usePrepareErc20Write<TFunctionName extends string>(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof erc20ABI, TFunctionName>,
-    "abi"
-  > = {} as any
+export function useDepositWithdrawTransfer<
+  TMode extends WriteContractMode = undefined
+>(
+  config: TMode extends "prepared"
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof depositWithdrawABI,
+          "transfer"
+        >["request"]["abi"],
+        "transfer",
+        TMode
+      > & { functionName?: "transfer" }
+    : UseContractWriteConfig<typeof depositWithdrawABI, "transfer", TMode> & {
+        abi?: never
+        functionName?: "transfer"
+      } = {} as any
 ) {
-  return usePrepareContractWrite({
-    abi: erc20ABI,
-    ...config,
-  } as UsePrepareContractWriteConfig<typeof erc20ABI, TFunctionName>)
-}
-
-/**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"approve"`.
- */
-export function usePrepareErc20Approve(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof erc20ABI, "approve">,
-    "abi" | "functionName"
-  > = {} as any
-) {
-  return usePrepareContractWrite({
-    abi: erc20ABI,
-    functionName: "approve",
-    ...config,
-  } as UsePrepareContractWriteConfig<typeof erc20ABI, "approve">)
-}
-
-/**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"transfer"`.
- */
-export function usePrepareErc20Transfer(
-  config: Omit<
-    UsePrepareContractWriteConfig<typeof erc20ABI, "transfer">,
-    "abi" | "functionName"
-  > = {} as any
-) {
-  return usePrepareContractWrite({
-    abi: erc20ABI,
+  return useContractWrite<typeof depositWithdrawABI, "transfer", TMode>({
+    abi: depositWithdrawABI,
     functionName: "transfer",
     ...config,
-  } as UsePrepareContractWriteConfig<typeof erc20ABI, "transfer">)
+  } as any)
 }
 
 /**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link erc20ABI}__ and `functionName` set to `"transferFrom"`.
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link depositWithdrawABI}__ and `functionName` set to `"withdraw"`.
  */
-export function usePrepareErc20TransferFrom(
+export function useDepositWithdrawWithdraw<
+  TMode extends WriteContractMode = undefined
+>(
+  config: TMode extends "prepared"
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof depositWithdrawABI,
+          "withdraw"
+        >["request"]["abi"],
+        "withdraw",
+        TMode
+      > & { functionName?: "withdraw" }
+    : UseContractWriteConfig<typeof depositWithdrawABI, "withdraw", TMode> & {
+        abi?: never
+        functionName?: "withdraw"
+      } = {} as any
+) {
+  return useContractWrite<typeof depositWithdrawABI, "withdraw", TMode>({
+    abi: depositWithdrawABI,
+    functionName: "withdraw",
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link depositWithdrawABI}__.
+ */
+export function usePrepareDepositWithdrawWrite<TFunctionName extends string>(
   config: Omit<
-    UsePrepareContractWriteConfig<typeof erc20ABI, "transferFrom">,
+    UsePrepareContractWriteConfig<typeof depositWithdrawABI, TFunctionName>,
+    "abi"
+  > = {} as any
+) {
+  return usePrepareContractWrite({
+    abi: depositWithdrawABI,
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof depositWithdrawABI, TFunctionName>)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link depositWithdrawABI}__ and `functionName` set to `"deposit"`.
+ */
+export function usePrepareDepositWithdrawDeposit(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof depositWithdrawABI, "deposit">,
     "abi" | "functionName"
   > = {} as any
 ) {
   return usePrepareContractWrite({
-    abi: erc20ABI,
-    functionName: "transferFrom",
+    abi: depositWithdrawABI,
+    functionName: "deposit",
     ...config,
-  } as UsePrepareContractWriteConfig<typeof erc20ABI, "transferFrom">)
+  } as UsePrepareContractWriteConfig<typeof depositWithdrawABI, "deposit">)
 }
 
 /**
- * Wraps __{@link useContractEvent}__ with `abi` set to __{@link erc20ABI}__.
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link depositWithdrawABI}__ and `functionName` set to `"transfer"`.
  */
-export function useErc20Event<TEventName extends string>(
+export function usePrepareDepositWithdrawTransfer(
   config: Omit<
-    UseContractEventConfig<typeof erc20ABI, TEventName>,
+    UsePrepareContractWriteConfig<typeof depositWithdrawABI, "transfer">,
+    "abi" | "functionName"
+  > = {} as any
+) {
+  return usePrepareContractWrite({
+    abi: depositWithdrawABI,
+    functionName: "transfer",
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof depositWithdrawABI, "transfer">)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link depositWithdrawABI}__ and `functionName` set to `"withdraw"`.
+ */
+export function usePrepareDepositWithdrawWithdraw(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof depositWithdrawABI, "withdraw">,
+    "abi" | "functionName"
+  > = {} as any
+) {
+  return usePrepareContractWrite({
+    abi: depositWithdrawABI,
+    functionName: "withdraw",
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof depositWithdrawABI, "withdraw">)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link depositWithdrawABI}__.
+ */
+export function useDepositWithdrawEvent<TEventName extends string>(
+  config: Omit<
+    UseContractEventConfig<typeof depositWithdrawABI, TEventName>,
     "abi"
   > = {} as any
 ) {
   return useContractEvent({
-    abi: erc20ABI,
+    abi: depositWithdrawABI,
     ...config,
-  } as UseContractEventConfig<typeof erc20ABI, TEventName>)
+  } as UseContractEventConfig<typeof depositWithdrawABI, TEventName>)
 }
 
 /**
- * Wraps __{@link useContractEvent}__ with `abi` set to __{@link erc20ABI}__ and `eventName` set to `"Approval"`.
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link depositWithdrawABI}__ and `eventName` set to `"Deposit"`.
  */
-export function useErc20ApprovalEvent(
+export function useDepositWithdrawDepositEvent(
   config: Omit<
-    UseContractEventConfig<typeof erc20ABI, "Approval">,
+    UseContractEventConfig<typeof depositWithdrawABI, "Deposit">,
     "abi" | "eventName"
   > = {} as any
 ) {
   return useContractEvent({
-    abi: erc20ABI,
-    eventName: "Approval",
+    abi: depositWithdrawABI,
+    eventName: "Deposit",
     ...config,
-  } as UseContractEventConfig<typeof erc20ABI, "Approval">)
+  } as UseContractEventConfig<typeof depositWithdrawABI, "Deposit">)
 }
 
 /**
- * Wraps __{@link useContractEvent}__ with `abi` set to __{@link erc20ABI}__ and `eventName` set to `"Transfer"`.
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link depositWithdrawABI}__ and `eventName` set to `"Transfer"`.
  */
-export function useErc20TransferEvent(
+export function useDepositWithdrawTransferEvent(
   config: Omit<
-    UseContractEventConfig<typeof erc20ABI, "Transfer">,
+    UseContractEventConfig<typeof depositWithdrawABI, "Transfer">,
     "abi" | "eventName"
   > = {} as any
 ) {
   return useContractEvent({
-    abi: erc20ABI,
+    abi: depositWithdrawABI,
     eventName: "Transfer",
     ...config,
-  } as UseContractEventConfig<typeof erc20ABI, "Transfer">)
+  } as UseContractEventConfig<typeof depositWithdrawABI, "Transfer">)
+}
+
+/**
+ * Wraps __{@link useContractEvent}__ with `abi` set to __{@link depositWithdrawABI}__ and `eventName` set to `"Withdrawal"`.
+ */
+export function useDepositWithdrawWithdrawalEvent(
+  config: Omit<
+    UseContractEventConfig<typeof depositWithdrawABI, "Withdrawal">,
+    "abi" | "eventName"
+  > = {} as any
+) {
+  return useContractEvent({
+    abi: depositWithdrawABI,
+    eventName: "Withdrawal",
+    ...config,
+  } as UseContractEventConfig<typeof depositWithdrawABI, "Withdrawal">)
 }
