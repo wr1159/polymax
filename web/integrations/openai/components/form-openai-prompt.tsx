@@ -41,7 +41,7 @@ export function FormOpenAIPrompt() {
     e.preventDefault()
 
     try {
-      await generateAIResponse(prompt, apiKey)
+      await generateAIResponse(prompt)
     } catch (e) {
       handleToast({
         title: "An Error Occurred",

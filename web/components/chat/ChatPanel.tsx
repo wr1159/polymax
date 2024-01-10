@@ -48,7 +48,7 @@ export function ChatPanel() {
   }
 
   return (
-    <Card className="w-full pt-6">
+    <Card className="w-full pt-6 border-none bg-inherit shadow-none">
       <CardContent>
         <form className="flex flex-col gap-4" onSubmit={handleGenerateResponse}>
           <Label htmlFor="question">Question</Label>
