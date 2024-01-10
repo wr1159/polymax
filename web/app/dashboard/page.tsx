@@ -11,6 +11,7 @@ import { IsWalletConnected } from "@/components/shared/is-wallet-connected"
 import { IsWalletDisconnected } from "@/components/shared/is-wallet-disconnected"
 
 import { BeefyData } from "./BeefyInterface"
+import { HarvestData } from "./HarvestInterface"
 import { YearnData } from "./YearnInterface"
 
 export default function PageDashboard() {
@@ -110,6 +111,7 @@ export default function PageDashboard() {
           <table>
             <thead>
               <tr>
+                <th>Exchange</th>
                 <th>Token Name</th>
                 <th>Platform</th>
                 <th>Estimated APY</th>
@@ -118,9 +120,11 @@ export default function PageDashboard() {
             <tbody>
               {beefyData &&
                 Object.keys(beefyData).map((token) => {
+                  const firstDashIndex = token.indexOf("-")
                   return (
                     <tr key={token}>
-                      <td>{token}</td>
+                      <td>{token.split("-")[0]}</td>
+                      <td>{token.slice(firstDashIndex + 1)}</td>
                       <td>Beefy</td>
                       <td>{String(beefyData[token].vaultApr)}</td>
                     </tr>
@@ -139,6 +143,21 @@ export default function PageDashboard() {
                       </td>
                     </tr>
                   )
+                })}
+              {harvestData &&
+                Object.keys(harvestData).map((key) => {
+                  const tokens = harvestData[key]
+                  return Object.keys(tokens).map((token) => {
+                    const firstDelimiterIndex = token.indexOf("_")
+                    return (
+                      <tr key={token}>
+                        <td>{token.split("_")[0]}</td>
+                        <td>{token.slice(firstDelimiterIndex + 1)}</td>
+                        <td>Harvest</td>
+                        <td>{tokens[token].estimatedApy}</td>
+                      </tr>
+                    )
+                  })
                 })}
             </tbody>
           </table>

@@ -1,16 +1,12 @@
 interface VaultData {
-  vaultApr: number;
-  compoundingsPerYear: number;
-  beefyPerformanceFee: number;
-  vaultApy: number;
-  lpFee: number;
-  totalApy: number;
-}
-
-interface TokenData {
-  [token: string]: VaultData;
+  vaultApr: number
+  compoundingsPerYear: number
+  beefyPerformanceFee: number
+  vaultApy: number
+  lpFee: number
+  totalApy: number
 }
 
 export interface BeefyData {
-  [key: string]: VaultData | TokenData;
+  [key: string]: VaultData
 }
