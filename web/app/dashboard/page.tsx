@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/config/design"
@@ -9,7 +10,73 @@ import { WalletEnsName } from "@/components/blockchain/wallet-ens-name"
 import { IsWalletConnected } from "@/components/shared/is-wallet-connected"
 import { IsWalletDisconnected } from "@/components/shared/is-wallet-disconnected"
 
+import { BeefyData } from "./BeefyInterface"
+import { YearnData } from "./YearnInterface"
+
 export default function PageDashboard() {
+  const [beefyData, setBeefyData] = useState<BeefyData | null>(null)
+  const [yearnData, setYearnData] = useState<YearnData | null>(null)
+  const [harvestData, setHarvestData] = useState<HarvestData | null>(null)
+
+  useEffect(() => {
+    // Make the API call when the component mounts
+    const fetchBeefyData = async () => {
+      try {
+        const response = await fetch("https://api.beefy.finance/apy/breakdown")
+
+        // Check if the response was successful (status code 2xx)
+        if (!response.ok) {
+          throw new Error("Failed to fetch data")
+        }
+
+        const result: BeefyData = await response.json()
+        setBeefyData(result)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+
+    const fetchYearnData = async () => {
+      try {
+        const response = await fetch(
+          "https://ydaemon.yearn.fi/vaults?hideAlways=true&orderBy=featuringScore&orderDirection=desc&strategiesDetails=withDetails&strategiesRisk=withRisk&strategiesCondition=inQueue&chainIDs=1%2C10%2C137%2C250%2C8453%2C42161&limit=2500"
+        )
+
+        // Check if the response was successful (status code 2xx)
+        if (!response.ok) {
+          throw new Error("Failed to fetch data")
+        }
+
+        const result: YearnData = await response.json()
+        setYearnData(result)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+
+    const fetchHarvestData = async () => {
+      try {
+        const response = await fetch(
+          "https://api.harvest.finance/vaults?key=41e90ced-d559-4433-b390-af424fdc76d6"
+        )
+
+        // Check if the response was successful (status code 2xx)
+        if (!response.ok) {
+          throw new Error("Failed to fetch data")
+        }
+
+        const result: HarvestData = await response.json()
+        setHarvestData(result)
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+
+    fetchBeefyData()
+    fetchYearnData()
+    fetchHarvestData()
+  }, [])
+
   return (
     <motion.div
       animate="show"
@@ -39,9 +106,43 @@ export default function PageDashboard() {
         </div>
       </IsWalletConnected>
       <IsWalletDisconnected>
-        <h3 className="text-lg font-normal">
-          Connect Wallet to view your personalized dashboard.
-        </h3>
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Token Name</th>
+                <th>Platform</th>
+                <th>Estimated APY</th>
+              </tr>
+            </thead>
+            <tbody>
+              {beefyData &&
+                Object.keys(beefyData).map((token) => {
+                  return (
+                    <tr key={token}>
+                      <td>{token}</td>
+                      <td>Beefy</td>
+                      <td>{String(beefyData[token].vaultApr)}</td>
+                    </tr>
+                  )
+                })}
+              {yearnData &&
+                yearnData.map((token) => {
+                  return (
+                    <tr key={token.address}>
+                      <td>{token.name}</td>
+                      <td>Yearn</td>
+                      <td>
+                        {token.apr.netAPR
+                          ? String(token.apr.netAPR)
+                          : String(token.apr.forwardAPR.netAPR)}
+                      </td>
+                    </tr>
+                  )
+                })}
+            </tbody>
+          </table>
+        </div>
       </IsWalletDisconnected>
     </motion.div>
   )
