@@ -6,25 +6,19 @@ import { Chain, ChainProviderFn, configureChains, sepolia } from "wagmi"
 import {
   avalancheFuji,
   celoAlfajores,
-  gnosisChiado,
   goerli as goerliNoIcon,
   hardhat,
-  mainnet,
   polygonMumbai,
+  moonbaseAlpha,
+  fantomTestnet
 } from "wagmi/chains"
 import { alchemyProvider } from "wagmi/providers/alchemy"
 import { infuraProvider } from "wagmi/providers/infura"
 import { publicProvider } from "wagmi/providers/public"
 
-const goerli = {
-  ...goerliNoIcon,
-  iconUrl: "/icons/NetworkEthereumTest.svg",
-}
-
-export const ETH_CHAINS_TEST = [goerli, sepolia, polygonMumbai, celoAlfajores, gnosisChiado, avalancheFuji, hardhat]
-
-export const ETH_CHAINS_PROD = [polygonMumbai, celoAlfajores, gnosisChiado, avalancheFuji]
-export const ETH_CHAINS_DEV = [goerli, sepolia, polygonMumbai, celoAlfajores, gnosisChiado, avalancheFuji, hardhat]
+export const ETH_CHAINS_TEST = [sepolia, polygonMumbai, avalancheFuji, fantomTestnet, celoAlfajores, moonbaseAlpha, hardhat]
+export const ETH_CHAINS_PROD = [polygonMumbai, avalancheFuji, fantomTestnet, celoAlfajores, moonbaseAlpha]
+export const ETH_CHAINS_DEV = [sepolia, polygonMumbai, avalancheFuji, fantomTestnet, celoAlfajores, moonbaseAlpha, hardhat]
   env.NEXT_PUBLIC_PROD_NETWORKS_DEV === "true"
     ? [...ETH_CHAINS_PROD, ...ETH_CHAINS_TEST]
     : [...ETH_CHAINS_TEST]

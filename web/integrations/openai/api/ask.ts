@@ -12,7 +12,12 @@ export async function POST(req: Request) {
 
   const payload: ModelConfig = {
     model: "gpt-3.5-turbo",
-    messages: [{ role: "user", content: prompt }],
+    messages: [
+      {
+        "role": "system",
+        "content":
+            "You are an expert in cryptocurrency investments."
+      },{ role: "user", content: prompt }],
     temperature: 0.7,
     top_p: 1,
     frequency_penalty: 0,

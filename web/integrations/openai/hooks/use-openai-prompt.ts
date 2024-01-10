@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { config as dotenvConfig } from "dotenv";
 
 export const useOpenAIPrompt = () => {
   const [response, setResponse] = useState<string>("")
@@ -12,9 +13,12 @@ export const useOpenAIPrompt = () => {
    * @param prompt The prompt to generate a response from
    * @param apiKey The OpenAI API key to use. If not set, the default API key from env variable OPENAI_API_KEY will be used.
    */
-  const generateAIResponse = async (prompt: string, apiKey?: string) => {
+  const generateAIResponse = async (prompt: string) => {
     setResponse("")
     setIsLoading(true)
+    dotenvConfig()
+
+    const API_KEY = process.env.OPENAI_API_KEY
 
     const response = await fetch("/api/openai/ask", {
       method: "POST",
@@ -23,7 +27,7 @@ export const useOpenAIPrompt = () => {
       },
       body: JSON.stringify({
         prompt,
-        apiKey,
+        API_KEY,
       }),
     })
 
