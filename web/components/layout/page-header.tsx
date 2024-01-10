@@ -38,7 +38,7 @@ function PageHeaderHeading({
     <motion.h1
       variants={fadeDownVariant()}
       className={cn(
-        "bg-gradient-to-br from-black to-stone-500 bg-clip-text text-center text-4xl font-bold leading-tight tracking-tight text-transparent drop-shadow-sm dark:from-stone-100 dark:to-yellow-200 md:text-8xl md:leading-[6rem] lg:leading-[1.1]",
+        "bg-gradient-to-br from-black to-stone-500 bg-clip-text text-left text-4xl font-bold leading-tight tracking-tight text-transparent drop-shadow-sm dark:from-stone-100 dark:to-yellow-200 md:text-8xl md:leading-[6rem] lg:leading-[1.1]",
         className
       )}
       {...props}
@@ -57,7 +57,7 @@ function PageHeaderDescription({
     <motion.p
       variants={fadeDownVariant()}
       className={cn(
-        "text-center text-lg text-muted-foreground md:text-xl",
+        "text-left text-lg text-muted-foreground md:text-xl",
         className
       )}
       {...props}
