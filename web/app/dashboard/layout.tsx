@@ -22,9 +22,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <ScrollArea className="py-6 pr-6 lg:py-8">
             <h3 className="text-lg font-normal">User</h3>
             <SidebarNav items={menuDashboard} />
-            <hr className="my-6 border-t border-muted" />
-            <h3 className="text-lg font-normal">Admin</h3>
-            <SidebarNav items={menuAdmin} />
           </ScrollArea>
           <footer className="fixed bottom-6 flex flex-col border-t pr-2 pt-4">
             <h3 className="text-sm font-semibold">{siteConfig.title}</h3>
