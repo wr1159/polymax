@@ -21,13 +21,34 @@ const goerli = {
   iconUrl: "/icons/NetworkEthereumTest.svg",
 }
 
-export const ETH_CHAINS_TEST = [goerli, sepolia, polygonMumbai, celoAlfajores, gnosisChiado, avalancheFuji, hardhat]
+export const ETH_CHAINS_TEST = [
+  goerli,
+  sepolia,
+  polygonMumbai,
+  celoAlfajores,
+  gnosisChiado,
+  avalancheFuji,
+  hardhat,
+]
 
-export const ETH_CHAINS_PROD = [polygonMumbai, celoAlfajores, gnosisChiado, avalancheFuji]
-export const ETH_CHAINS_DEV = [goerli, sepolia, polygonMumbai, celoAlfajores, gnosisChiado, avalancheFuji, hardhat]
-  env.NEXT_PUBLIC_PROD_NETWORKS_DEV === "true"
-    ? [...ETH_CHAINS_PROD, ...ETH_CHAINS_TEST]
-    : [...ETH_CHAINS_TEST]
+export const ETH_CHAINS_PROD = [
+  polygonMumbai,
+  celoAlfajores,
+  gnosisChiado,
+  avalancheFuji,
+]
+export const ETH_CHAINS_DEV = [
+  goerli,
+  sepolia,
+  polygonMumbai,
+  celoAlfajores,
+  gnosisChiado,
+  avalancheFuji,
+  hardhat,
+]
+env.NEXT_PUBLIC_PROD_NETWORKS_DEV === "true"
+  ? [...ETH_CHAINS_PROD, ...ETH_CHAINS_TEST]
+  : [...ETH_CHAINS_TEST]
 
 export const CHAINS: Chain[] =
   process.env.NODE_ENV === "production" ? ETH_CHAINS_PROD : ETH_CHAINS_DEV
