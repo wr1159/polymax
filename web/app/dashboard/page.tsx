@@ -12,23 +12,20 @@ import { IsWalletConnected } from "@/components/shared/is-wallet-connected"
 import { IsWalletDisconnected } from "@/components/shared/is-wallet-disconnected"
 
 import { BeefyData } from "./BeefyInterface"
+import { columns } from "./columns"
+import { DataTable } from "./data-table"
 import { HarvestData } from "./HarvestInterface"
 import { YearnData } from "./YearnInterface"
 
-interface parsedData {
-  [key: string]: {
-    exchange: string
-    token: string
-    platform: string
-    apy: string
-  }
+export interface parsedData {
+  exchange: string
+  token: string
+  platform: string
+  apr: string
 }
 
 export default function PageDashboard() {
-  const [beefyData, setBeefyData] = useState<BeefyData | null>(null)
-  const [yearnData, setYearnData] = useState<YearnData | null>(null)
-  const [harvestData, setHarvestData] = useState<HarvestData | null>(null)
-  const [parsedData, setParsedData] = useState<parsedData | null>(null)
+  const [allData, setAllData] = useState<parsedData[]>([])
 
   useEffect(() => {
     // Make the API call when the component mounts
@@ -42,7 +39,6 @@ export default function PageDashboard() {
         }
 
         const result: BeefyData = await response.json()
-        setBeefyData(result)
         parseBeefyData(result)
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -50,18 +46,18 @@ export default function PageDashboard() {
     }
 
     const parseBeefyData = (data: BeefyData) => {
-      const parsedData: parsedData = {}
+      const dataArray: parsedData[] = []
       if (!data) return
       Object.keys(data).forEach((key) => {
         const firstDashIndex = key.indexOf("-")
-        parsedData[key] = {
+        dataArray.push({
           exchange: key.split("-")[0],
           token: key.slice(firstDashIndex + 1),
           platform: "Beefy",
-          apy: String(data[key].vaultApr),
-        }
+          apr: String(data[key].vaultApr * 100).substring(0, 6),
+        })
       })
-      setParsedData(parsedData)
+      setAllData(dataArray)
       return
     }
 
@@ -77,7 +73,6 @@ export default function PageDashboard() {
         }
 
         const result: YearnData = await response.json()
-        setYearnData(result)
         parseYearnData(result)
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -85,19 +80,19 @@ export default function PageDashboard() {
     }
 
     const parseYearnData = (data: YearnData) => {
-      const parsedData: parsedData = {}
+      const dataArray: parsedData[] = []
       if (!data) return
       data.forEach((token) => {
-        parsedData[token.name] = {
+        dataArray.push({
           exchange: "",
           token: token.name,
           platform: "Yearn",
-          apy: token.apr.netAPR
-            ? String(token.apr.netAPR)
-            : String(token.apr.forwardAPR.netAPR),
-        }
+          apr: token.apr.netAPR
+            ? String(token.apr.netAPR * 100).substring(0, 6)
+            : String(token.apr.forwardAPR.netAPR).substring(0, 6),
+        })
       })
-      setParsedData((prev) => ({ ...prev, ...parsedData }))
+      setAllData((prev) => [...prev, ...dataArray])
       return
     }
 
@@ -114,7 +109,6 @@ export default function PageDashboard() {
 
         const result: HarvestData = await response.json()
         delete result.updatedAt
-        setHarvestData(result)
         parseHarvestData(result)
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -122,28 +116,27 @@ export default function PageDashboard() {
     }
 
     const parseHarvestData = (data: HarvestData) => {
-      const parsedData: parsedData = {}
+      const dataArray: parsedData[] = []
       if (!data) return
       Object.keys(data).forEach((key) => {
         const tokens = data[key]
         Object.keys(tokens).forEach((token) => {
           const firstDelimiterIndex = token.indexOf("_")
-          parsedData[token] = {
+          dataArray.push({
             exchange: token.split("_")[0],
             token: token.slice(firstDelimiterIndex + 1),
             platform: "Harvest",
-            apy: tokens[token].estimatedApy,
-          }
+            apr: String(tokens[token].estimatedApy).substring(0, 6),
+          })
         })
       })
-      setParsedData((prev) => ({ ...prev, ...parsedData }))
+      setAllData((prev) => [...prev, ...dataArray])
       return
     }
 
     fetchBeefyData()
     fetchYearnData()
     fetchHarvestData()
-
   }, [])
 
   return (
@@ -175,72 +168,11 @@ export default function PageDashboard() {
         </div>
       </IsWalletConnected>
       <IsWalletDisconnected>
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Exchange</th>
-                <th>Token Name</th>
-                <th>Platform</th>
-                <th>Estimated APY</th>
-              </tr>
-            </thead>
-            <tbody>
-              {parsedData &&
-                Object.keys(parsedData).map((key) => {
-                  return (
-                    <tr key={key}>
-                      <td>{parsedData[key].exchange}</td>
-                      <td>{parsedData[key].token}</td>
-                      <td>{parsedData[key].platform}</td>
-                      <td>{parsedData[key].apy}</td>
-                    </tr>
-                  )
-                })}
-              {/* {beefyData &&
-                Object.keys(beefyData).map((token) => {
-                  const firstDashIndex = token.indexOf("-")
-                  return (
-                    <tr key={token}>
-                      <td>{token.split("-")[0]}</td>
-                      <td>{token.slice(firstDashIndex + 1)}</td>
-                      <td>Beefy</td>
-                      <td>{String(beefyData[token].vaultApr)}</td>
-                    </tr>
-                  )
-                })}
-              {yearnData &&
-                yearnData.map((token) => {
-                  return (
-                    <tr key={token.address}>
-                      <td></td>
-                      <td>{token.name}</td>
-                      <td>Yearn</td>
-                      <td>
-                        {token.apr.netAPR
-                          ? String(token.apr.netAPR)
-                          : String(token.apr.forwardAPR.netAPR)}
-                      </td>
-                    </tr>
-                  )
-                })}
-              {harvestData &&
-                Object.keys(harvestData).map((key) => {
-                  const tokens = harvestData[key]
-                  return Object.keys(tokens).map((token) => {
-                    const firstDelimiterIndex = token.indexOf("_")
-                    return (
-                      <tr key={token}>
-                        <td>{token.split("_")[0]}</td>
-                        <td>{token.slice(firstDelimiterIndex + 1)}</td>
-                        <td>Harvest</td>
-                        <td>{tokens[token].estimatedApy}</td>
-                      </tr>
-                    )
-                  })
-                })} */}
-            </tbody>
-          </table>
+        <div className="container mx-auto py-10">
+          <DataTable
+            columns={columns}
+            data={allData}
+          />
         </div>
       </IsWalletDisconnected>
     </motion.div>
