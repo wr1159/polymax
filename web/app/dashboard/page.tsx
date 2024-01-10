@@ -1,5 +1,6 @@
 "use client"
 
+import { Squid } from "@0xsquid/sdk"
 import { motion } from "framer-motion"
 
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/config/design"
