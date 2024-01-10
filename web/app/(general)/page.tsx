@@ -1,6 +1,8 @@
 import Image from "next/image"
 import Link from "next/link"
-import { FaDiscord, FaGithub } from "react-icons/fa"
+
+import "@/styles/animation.css"
+
 import { LuBook } from "react-icons/lu"
 
 import { siteConfig } from "@/config/site"
@@ -14,61 +16,64 @@ import {
 } from "@/components/layout/page-header"
 import { CopyButton } from "@/components/shared/copy-button"
 import { ExampleDemos } from "@/components/shared/example-demos"
+import { IsDarkTheme } from "@/components/shared/is-dark-theme"
+import { IsLightTheme } from "@/components/shared/is-light-theme"
 
 export default function HomePage() {
   return (
     <div className="container relative mt-20 px-0">
-      <PageHeader className="pb-8">
-        <Image
-          src="/logo-gradient.png"
-          alt="TurboETH Logo"
-          width={80}
-          height={80}
-          className="h-20 w-20 rounded-2xl"
-        />
-        <PageHeaderHeading>Build Web3 in Turbo&nbsp;Mode</PageHeaderHeading>
-        <PageHeaderDescription>{siteConfig.description}</PageHeaderDescription>
-        <PageHeaderCTA>
-          <Link
-            href={siteConfig.links.docs}
-            target="_blank"
-            rel="noreferrer noopener"
-            className={buttonVariants({ variant: "default" })}
-          >
-            <LuBook className="mr-2 h-4 w-4" />
-            Docs
-          </Link>
-          <Link
-            href={siteConfig.links.github}
-            target="_blank"
-            rel="noreferrer noopener"
-            className={buttonVariants({ variant: "secondary" })}
-          >
-            <FaGithub className="mr-2 h-4 w-4" />
-            Github
-          </Link>
-          <Link
-            href={siteConfig.links.discord}
-            target="_blank"
-            rel="noreferrer noopener"
-            className={cn(
-              buttonVariants(),
-              "bg-[#7289da] text-white hover:bg-[#7289da]/80"
-            )}
-          >
-            <FaDiscord className="mr-2 h-4 w-4" />
-            Discord
-          </Link>
-        </PageHeaderCTA>
-        <PageHeaderCTA>
-          <CopyButton value="pnpm create turbo-eth@latest">
-            <span className="text-xs sm:text-base">
-              pnpm create turbo-eth@latest
-            </span>
-          </CopyButton>
-        </PageHeaderCTA>
+      <PageHeader className="flex pb-8">
+        <div className="flex justify-center">
+          <div className="pr-10">
+            <PageHeaderHeading>
+              Reshape the yield farming landscape{" "}
+            </PageHeaderHeading>
+            <PageHeaderDescription>
+              PolyMax - {siteConfig.description}
+            </PageHeaderDescription>
+          </div>
+          <div>
+            <IsLightTheme>
+              <Image
+                src="/logo.png"
+                alt="Polymax Logo"
+                width={200}
+                height={200}
+                className="bounce-with-delay m-auto rounded-2xl pb-0"
+              />
+              <div className="ripple-effect m-auto h-full w-full rounded-2xl border-black">
+                <Image
+                  src="/logo.png"
+                  alt="Polymax Logo"
+                  width={100}
+                  height={100}
+                  className="h-full w-full rounded-2xl"
+                />
+                <div className="ripple-effect invisible"></div>
+              </div>
+            </IsLightTheme>
+            <IsDarkTheme>
+              <Image
+                src="/logo-dark.png"
+                alt="Polymax Logo"
+                width={200}
+                height={200}
+                className="bounce-with-delay m-auto rounded-2xl pb-0"
+              />
+              <div className="ripple-effect m-auto h-full w-full rounded-2xl border-white">
+                <Image
+                  src="/logo-dark.png"
+                  alt="Polymax Logo"
+                  width={100}
+                  height={100}
+                  className="h-full w-full rounded-2xl"
+                />
+                <div className="ripple-effect invisible"></div>
+              </div>
+            </IsDarkTheme>
+          </div>
+        </div>
       </PageHeader>
-      <ExampleDemos />
     </div>
   )
 }
