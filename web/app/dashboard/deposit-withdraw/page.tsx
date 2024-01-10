@@ -1,8 +1,9 @@
 "use client"
 
+import { useState } from "react"
 import { utils } from "ethers"
 import { motion } from "framer-motion"
-import { useAccount, useChainId, useContractWrite } from "wagmi"
+import { useAccount, useChainId } from "wagmi"
 
 import { FADE_DOWN_ANIMATION_VARIANTS } from "@/config/design"
 import {
@@ -11,6 +12,7 @@ import {
   useDepositWithdrawWithdraw,
 } from "@/lib/generated/blockchain"
 import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 import { ContractWriteButton } from "@/components/blockchain/contract-write-button"
 import { IsWalletConnected } from "@/components/shared/is-wallet-connected"
 import { IsWalletDisconnected } from "@/components/shared/is-wallet-disconnected"
@@ -23,27 +25,30 @@ export default function PageDashboardAccount() {
     chainId: useChainId(),
     args: [userAddress],
   })
-  const {
-    write: depositWrite,
-    isLoading: depositIsLoading,
-    isIdle: depositIsIdle,
-  } = useDepositWithdrawDeposit({
-    address: address,
-    chainId: useChainId(),
-    value: utils.parseEther("0.1").toBigInt(),
-  })
+  const { write: depositWrite, isLoading: depositIsLoading } =
+    useDepositWithdrawDeposit({
+      address: address,
+      chainId: useChainId(),
+      value: utils.parseEther("0.1").toBigInt(),
+    })
+  const { write: withdrawWrite, isLoading: withdrawIsLoading } =
+    useDepositWithdrawWithdraw({
+      address: address,
+      chainId: useChainId(),
+      args: [balance as bigint],
+    })
+  const [depositValue, setDepositValue] = useState("0.1")
+  const [withdrawValue, setWithdrawValue] = useState("0")
 
-  console.log(depositIsLoading)
-  const {
-    write: withdrawWrite,
-    isLoading: withdrawIsLoading,
-    isIdle: withdrawIsIdle,
-  } = useDepositWithdrawWithdraw({
-    address: address,
-    chainId: useChainId(),
-    args: [balance as bigint],
-  })
-  console.log(withdrawIsLoading, withdrawIsIdle, withdrawWrite)
+  const handleDeposit = () => {
+    const depositAmount = utils.parseEther(depositValue).toBigInt()
+    depositWrite({ value: depositAmount })
+  }
+  const handleWithdraw = () => {
+    const withdrawAmount = utils.parseEther(withdrawValue).toBigInt()
+    withdrawWrite({ args: [withdrawAmount] })
+  }
+
   return (
     <motion.div
       animate="show"
@@ -55,24 +60,53 @@ export default function PageDashboardAccount() {
     >
       <IsWalletConnected>
         <Card className="w-full p-6">
-          <h3 className="text-2xl font-normal">
+          <h3 className="text-2xl font-normal text-primary">
             Deposit and Withdraw into our AI Vault
           </h3>
+          {balance !== undefined && (
+            <h4 className="text-lg">
+              Current balance: {utils.formatEther(balance)}
+            </h4>
+          )}
           <hr className="my-3 dark:opacity-30" />
           <div className="flex flex-col gap-y-2">
-            <ContractWriteButton
-              isLoadingTx={depositIsLoading || false}
-              isLoadingWrite={false}
-              onClick={() => depositWrite()}
-            >
-              Deposit 0.1
-            </ContractWriteButton>
+            <div className="flex gap-x-2">
+              <Input
+                type="number"
+                value={depositValue}
+                onChange={(e) => setDepositValue(e.target.value)}
+              />
+              <ContractWriteButton
+                isLoadingTx={depositIsLoading || false}
+                isLoadingWrite={false}
+                onClick={handleDeposit}
+                className="px-6"
+              >
+                Deposit
+              </ContractWriteButton>
+            </div>
+            <div className="flex gap-x-2">
+              <Input
+                type="number"
+                value={withdrawValue}
+                onChange={(e) => setWithdrawValue(e.target.value)}
+              />
+              <ContractWriteButton
+                isLoadingTx={withdrawIsLoading || false}
+                isLoadingWrite={false}
+                onClick={handleWithdraw}
+                className="w-fit"
+              >
+                Withdraw
+              </ContractWriteButton>
+            </div>
+
             <ContractWriteButton
               isLoadingTx={withdrawIsLoading || false}
               isLoadingWrite={false}
               onClick={() => withdrawWrite()}
             >
-              Withdraw All (${balance?.toString()} in balance)
+              Withdraw All
             </ContractWriteButton>
           </div>
         </Card>
