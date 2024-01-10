@@ -21,7 +21,22 @@ export interface parsedData {
   exchange: string
   token: string
   platform: string
-  apr: string
+  apr: number
+}
+
+function capitalizeWordsWithDelimiters(inputString: String) {
+  const wordsAndDelimiters = inputString.split(/([\s-]+)/)
+
+  const capitalizedString = wordsAndDelimiters
+    .map((part, index) => {
+      // Capitalize only if it's a word (not a delimiter)
+      return index % 2 === 0
+        ? part.charAt(0).toUpperCase() + part.slice(1)
+        : part
+    })
+    .join("")
+
+  return capitalizedString
 }
 
 export default function PageDashboard() {
@@ -51,10 +66,12 @@ export default function PageDashboard() {
       Object.keys(data).forEach((key) => {
         const firstDashIndex = key.indexOf("-")
         dataArray.push({
-          exchange: key.split("-")[0],
-          token: key.slice(firstDashIndex + 1),
+          exchange:
+            key.split("-")[0].charAt(0).toUpperCase() +
+            key.split("-")[0].slice(1),
+          token: capitalizeWordsWithDelimiters(key.slice(firstDashIndex + 1)),
           platform: "Beefy",
-          apr: String(data[key].vaultApr * 100).substring(0, 6),
+          apr: Number((data[key].vaultApr * 100).toFixed(2)),
         })
       })
       setAllData(dataArray)
@@ -88,8 +105,10 @@ export default function PageDashboard() {
           token: token.name,
           platform: "Yearn",
           apr: token.apr.netAPR
-            ? String(token.apr.netAPR * 100).substring(0, 6)
-            : String(token.apr.forwardAPR.netAPR).substring(0, 6),
+            ? Number((token.apr.netAPR * 100).toFixed(2))
+            : token.apr.forwardAPR.netAPR
+            ? Number((token.apr.forwardAPR.netAPR * 100).toFixed(2))
+            : 0,
         })
       })
       setAllData((prev) => [...prev, ...dataArray])
@@ -123,10 +142,12 @@ export default function PageDashboard() {
         Object.keys(tokens).forEach((token) => {
           const firstDelimiterIndex = token.indexOf("_")
           dataArray.push({
-            exchange: token.split("_")[0],
+            exchange:
+              token.split("_")[0].charAt(0).toUpperCase() +
+              token.split("_")[0].slice(1),
             token: token.slice(firstDelimiterIndex + 1),
             platform: "Harvest",
-            apr: String(tokens[token].estimatedApy).substring(0, 6),
+            apr: Number(Number(tokens[token].estimatedApy).toFixed(2)),
           })
         })
       })
@@ -171,7 +192,9 @@ export default function PageDashboard() {
         <div className="container mx-auto py-10">
           <DataTable
             columns={columns}
-            data={allData}
+            data={allData
+              .filter((token) => token.apr > 0 && token.apr < 1200)
+              .sort((a, b) => b.apr - a.apr)}
           />
         </div>
       </IsWalletDisconnected>
