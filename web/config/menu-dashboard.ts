@@ -14,4 +14,8 @@ export const menuDashboard = [
     label: "Transactions",
     href: "/dashboard/transactions",
   },
+  {
+    label: "Deposit Withdraw",
+    href: "/dashboard/deposit-withdraw",
+  },
 ]
