@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { FaDiscord, FaGithub, FaTwitter } from "react-icons/fa"
+import { FaGithub } from "react-icons/fa"
 
 import { menuAdmin } from "@/config/menu-admin"
 import { menuDashboard } from "@/config/menu-dashboard"
@@ -22,29 +22,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <ScrollArea className="py-6 pr-6 lg:py-8">
             <h3 className="text-lg font-normal">User</h3>
             <SidebarNav items={menuDashboard} />
-            <hr className="my-6 border-t border-muted" />
-            <h3 className="text-lg font-normal">Admin</h3>
-            <SidebarNav items={menuAdmin} />
           </ScrollArea>
           <footer className="fixed bottom-6 flex flex-col border-t pr-2 pt-4">
             <h3 className="text-sm font-semibold">{siteConfig.title}</h3>
-            <a
-              href="https://districtlabs.com"
-              target="_blank"
-              rel="noreferrer"
-              className="w-fit py-2 text-xs text-primary underline-offset-4 hover:underline"
-            >
-              Built by District Labs
-            </a>
             <div className="mt-2 flex items-center space-x-2">
               <Link href={siteConfig.links.github}>
                 <FaGithub />
-              </Link>
-              <Link href={siteConfig.links.twitter}>
-                <FaTwitter />
-              </Link>
-              <Link href={siteConfig.links.discord}>
-                <FaDiscord />
               </Link>
             </div>
           </footer>

@@ -143,7 +143,7 @@ export function MobileNav() {
               </AccordionItem>
             </Accordion>
             <Link
-              href="https://docs.turboeth.xyz/overview"
+              href="https://github.com/wr1159/polymax"
               className="font-medium"
             >
               Documentation

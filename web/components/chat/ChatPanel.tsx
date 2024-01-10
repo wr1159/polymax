@@ -7,16 +7,12 @@ import { FaCopy } from "react-icons/fa"
 import { useToast } from "@/lib/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { LinkComponent } from "@/components/shared/link-component"
+import { useOpenAIPrompt } from "@/integrations/openai/hooks/use-openai-prompt"
 
-import { useOpenAIPrompt } from "../hooks/use-openai-prompt"
-
-export function FormOpenAIPrompt() {
-  const [prompt, setPrompt] = useState<string>("")
-  const [apiKey, setApiKey] = useState<string>("")
+export function ChatPanel() {
+  const [question, setQuestion] = useState<string>("")
   const { toast, dismiss } = useToast()
   const { response, isLoading, generateAIResponse } = useOpenAIPrompt()
 
@@ -41,7 +37,7 @@ export function FormOpenAIPrompt() {
     e.preventDefault()
 
     try {
-      await generateAIResponse(prompt)
+      await generateAIResponse(question)
     } catch (e) {
       handleToast({
         title: "An Error Occurred",
@@ -52,32 +48,22 @@ export function FormOpenAIPrompt() {
   }
 
   return (
-    <Card className="w-full pt-6">
+    <Card className="w-full pt-6 border-none bg-inherit shadow-none">
       <CardContent>
         <form className="flex flex-col gap-4" onSubmit={handleGenerateResponse}>
-          <Label htmlFor="apiKey">OpenAI API Key</Label>
-          <Input
-            id="apiKey"
-            required
-            pattern="sk-[a-zA-Z0-9]{48}"
-            type="password"
-            placeholder="sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-          />
-          <Label htmlFor="prompt">Prompt</Label>
+          <Label htmlFor="question">Question</Label>
           <Textarea
-            id="prompt"
-            placeholder="Type your prompt here."
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
+            id="question"
+            placeholder="Your question here."
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
           />
           <div className="relative">
             <Label htmlFor="response">Response</Label>
             <Textarea
               readOnly
               className="mt-2 h-60"
-              placeholder="Your AI response will appear here."
+              placeholder="PolyMaster's reply will appear here."
               value={response}
             />
             {response && (
@@ -97,29 +83,13 @@ export function FormOpenAIPrompt() {
               </CopyToClipboard>
             )}
           </div>
-          <Button
-            variant="default"
-            disabled={isLoading || !prompt}
-            type="submit"
-          >
-            {isLoading ? "Generating..." : "Generate"}
+          <Button disabled={isLoading || !prompt} type="submit">
+            {isLoading ? "Replying..." : "Ask"}
           </Button>
         </form>{" "}
-        <hr className="my-4" />
-        <div className="flex items-center justify-between">
-          <h3 className="text-center">OpenAI</h3>
-          <p className="text-center text-sm text-muted-foreground">
-            <LinkComponent
-              isExternal
-              className="font-bold"
-              href={"https://platform.openai.com/account/api-keys"}
-            >
-              Get your API keys
-            </LinkComponent>{" "}
-            to interact with OpenAI.
-          </p>
-        </div>
       </CardContent>
     </Card>
   )
 }
+
+export default ChatPanel
