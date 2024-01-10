@@ -3,7 +3,6 @@ import Link from "next/link"
 
 import "@/styles/animation.css"
 
-import { FaDiscord, FaGithub } from "react-icons/fa"
 import { LuBook } from "react-icons/lu"
 
 import { siteConfig } from "@/config/site"
