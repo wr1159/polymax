@@ -18,7 +18,7 @@ export const SITE_CANONICAL = "https://polymax.vercel.app/"
 export const siteConfig: SiteConfig = {
   name: "PolyMax",
   title: "PolyMax - Cross-Chain Yield Aggregation Solution",
-  emoji: "🕋",
+  emoji: "🏦",
   description:
     "Unified gateway to optimise yields across different blockchains.",
   localeDefault: "en",
