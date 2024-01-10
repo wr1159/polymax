@@ -17,7 +17,7 @@ import { infuraProvider } from "wagmi/providers/infura"
 import { publicProvider } from "wagmi/providers/public"
 
 export const ETH_CHAINS_TEST = [sepolia, polygonMumbai, avalancheFuji, fantomTestnet, celoAlfajores, moonbaseAlpha, hardhat]
-export const ETH_CHAINS_PROD = [sepolia, polygonMumbai, avalancheFuji, fantomTestnet, celoAlfajores, moonbaseAlpha]
+export const ETH_CHAINS_PROD = [polygonMumbai, avalancheFuji, fantomTestnet, celoAlfajores, moonbaseAlpha]
 export const ETH_CHAINS_DEV = [sepolia, polygonMumbai, avalancheFuji, fantomTestnet, celoAlfajores, moonbaseAlpha, hardhat]
   env.NEXT_PUBLIC_PROD_NETWORKS_DEV === "true"
     ? [...ETH_CHAINS_PROD, ...ETH_CHAINS_TEST]
