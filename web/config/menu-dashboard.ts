@@ -3,15 +3,15 @@
 // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 export const menuDashboard = [
   {
-    label: "Overview",
+    label: "Dashboard",
     href: "/dashboard",
+  },
+  {
+    label: "AI Vault",
+    href: "/dashboard/ai-vault",
   },
   {
     label: "Account",
     href: "/dashboard/account",
   },  
-  {
-    label: "AI Vault",
-    href: "/dashboard/ai-vault",
-  },
 ]

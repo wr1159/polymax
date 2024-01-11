@@ -20,15 +20,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { DepositToPolygonButton } from "@/components/blockchain/deposit-to-polygon-button"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  disabled?: boolean
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  disabled = true,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
 
@@ -81,6 +84,9 @@ export function DataTable<TData, TValue>({
                       )}
                     </TableCell>
                   ))}
+                  <TableCell>
+                    <DepositToPolygonButton disabled={disabled} />
+                  </TableCell>
                 </TableRow>
               ))
             ) : (

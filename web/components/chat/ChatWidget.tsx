@@ -16,7 +16,7 @@ export function ChatWidget() {
   const [isOpen, setOpen] = useState<boolean>(false)
   return (
     <Popover open={isOpen}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild className="bg-background">
         {isOpen ? (
           <Button size="icon" onClick={() => setOpen(false)}>
             <RxCross1 />
