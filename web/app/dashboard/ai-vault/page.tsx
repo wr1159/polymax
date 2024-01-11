@@ -61,8 +61,10 @@ export default function PageDashboardAccount() {
       <IsWalletConnected>
         <Card className="w-full p-6">
           <h3 className="text-2xl font-normal text-primary">
-            Deposit and Withdraw into our AI Vault
+            Deposit and Withdraw into our AI Vault (Current APY:{" "}
+            <span className="font-bold">81.3%</span>)
           </h3>
+          <h4 className="text-xl font-normal text-primary"></h4>
           {balance !== undefined && (
             <h4 className="text-lg">
               Current balance: {utils.formatEther(balance)}
