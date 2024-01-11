@@ -1,13 +1,15 @@
 # PolyMax - Cross-Chain Yield Aggregation Solution
 
+![PolyMax Landing Page](./web/public/polymax_landing_page.jpeg "PolyMax's Landing Page")
+
 ## Overview
 
-Our proposed solution is a Cross-Chain Yield Aggregation Platform that supports various blockchains, starting with Ethereum, Avalanche and other EVM chains, then extending to non-EVM chains like Solana. 
+Our proposed solution is a Cross-Chain Yield Aggregation Platform that supports various blockchains, starting with Ethereum, Avalanche and other EVM chains, then extending to non-EVM chains like Solana.
 
 ## File structure
 
 `hardhat` contains the files related to our smart contracts
-`web` contains the files for our frontend 
+`web` contains the files for our frontend
 
 Build with
 Smart Contract: Solidity, Hardhat
