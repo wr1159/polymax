@@ -1,27 +1,37 @@
-"use client"
-
+import { useState } from "react"
 import { abi } from "@/data/DepositWithdrawABI"
 import { Squid } from "@0xsquid/sdk"
 import { SquidCallType } from "@0xsquid/squid-types"
 import { ethers } from "ethers"
-import { parseEther } from "ethers/lib/utils"
-import { motion } from "framer-motion"
+import { parseEther } from "viem"
 import { useAccount, useChainId } from "wagmi"
 
-import { FADE_DOWN_ANIMATION_VARIANTS } from "@/config/design"
-import {
-  useDepositWithdrawDeposit,
-  useDepositWithdrawGetBalance,
-  useDepositWithdrawWithdraw,
-} from "@/lib/generated/blockchain"
-import { useEthersProvider } from "@/lib/hooks/web3/use-ethers-provider"
 import { useEthersSigner } from "@/lib/hooks/web3/use-ethers-signer"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { IsWalletConnected } from "@/components/shared/is-wallet-connected"
-import { IsWalletDisconnected } from "@/components/shared/is-wallet-disconnected"
 
-export default function PageDashboardSquid() {
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+
+interface DepositButtonProps {
+  disabled?: boolean
+}
+export function DepositToPolygonButton({
+  disabled = true,
+}: DepositButtonProps) {
+  // TODO: Implement button functionality
+
+  const [depositValue, setDepositValue] = useState<string>("0.1")
+
   const signerAddress = useAccount()?.address as `0x${string}`
   const fromChainID = useChainId()
   const signer = useEthersSigner()
@@ -49,7 +59,7 @@ export default function PageDashboardSquid() {
       fromAddress: signerAddress,
       fromChain: fromChainID.toString(),
       fromToken: nativeToken,
-      fromAmount: parseEther("0.025").toString(),
+      fromAmount: parseEther(depositValue).toString(),
       toChain: "80001",
       toToken: nativeToken,
       toAddress: signerAddress,
@@ -103,30 +113,35 @@ export default function PageDashboardSquid() {
       // Display the route status
       console.log(`Route status: ${status.squidTransactionStatus}`)
     }
-    // Execute the swap and deposit transaction
   }
-
   return (
-    <motion.div
-      animate="show"
-      className="flex h-full w-full items-center justify-center py-6 lg:py-8"
-      initial="hidden"
-      variants={FADE_DOWN_ANIMATION_VARIANTS}
-      viewport={{ once: true }}
-      whileInView="show"
-    >
-      <IsWalletConnected>
-        <Card className="w-[420px] p-6">
-          <h3 className="text-2xl font-normal">Squid</h3>
-          <hr className="my-3 dark:opacity-30" />
-          <Button onClick={() => depositToPolygon()}>Deposit</Button>
-        </Card>
-      </IsWalletConnected>
-      <IsWalletDisconnected>
-        <h3 className="text-lg font-normal">
-          Connect Wallet to view your personalized dashboard.
-        </h3>
-      </IsWalletDisconnected>
-    </motion.div>
+    <>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button disabled={disabled}>Deposit</Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              How much would you like to deposit
+            </AlertDialogTitle>
+            <Input
+              value={depositValue}
+              onChange={(e) => setDepositValue(e.target.value)}
+              type="number"
+            />
+            <AlertDialogDescription>
+              This action cannot be undone once the transaction is submitted.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => depositToPolygon()}>
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
