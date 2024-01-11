@@ -44,8 +44,6 @@ export function DepositToPolygonButton({
 
     // init the SDK
     await squid.init()
-    console.log("Squid inited")
-    console.log(squid)
 
     const contractAddress = "0x9D092d333a721102a59E9324592C268764ec2558"
 
@@ -81,7 +79,6 @@ export function DepositToPolygonButton({
     // Get the swap route using Squid SDK
     const { route, requestId } = await squid.getRoute(params)
     console.log("Calculated route:", route.estimate.toAmount)
-    console.log("signer", signer)
 
     await new Promise((resolve) => setTimeout(resolve, 5000))
     if (signer != undefined) {
@@ -111,7 +108,7 @@ export function DepositToPolygonButton({
       const status = await squid.getStatus(getStatusParams)
 
       // Display the route status
-      console.log(`Route status: ${status.squidTransactionStatus}`)
+      console.log(`Route status: ${status.squidTransactionStatus || "❌"}`)
     }
   }
   return (
