@@ -22,8 +22,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <h3 className="text-lg font-normal">User</h3>
             <SidebarNav items={menuDashboard} />
           </ScrollArea>
-          <footer className="fixed bottom-6 flex flex-col border-t pr-2 pt-4">
-            <h3 className="text-sm font-semibold">{siteConfig.title}</h3>
+          <footer className="fixed bottom-6 flex flex-col pr-2 pt-4">
+            <h3 className="text-sm font-semibold text-wrap max-w-60">
+              {siteConfig.title}
+            </h3>
             <div className="mt-2 flex items-center space-x-2">
               <Link href={siteConfig.links.github}>
                 <FaGithub />
